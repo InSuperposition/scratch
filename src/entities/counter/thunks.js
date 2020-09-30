@@ -1,63 +1,26 @@
-// use `setTimeout` with async/await
-function mockAsync(value, ms = 1000, ...args) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms, ...[value, ...args])
-  })
-}
+import {createAsyncThunk} from '@reduxjs/toolkit'
+import {NAME} from './constants.js'
+import {fetchCount} from './async.js'
 
-export async function fetchCount(amount) {
-  let amountResponse
+export const fetchCountThunk = createAsyncThunk(
+  `${NAME}/asyncCount`,
+  async function fetchCountThunk(value, thunkAPI) {
 
-  // try/catch/finally gotchas
-  // - use `await` before calling async funcs, even after `return` statement
-  // -
-  throw new TypeError('bad code')
-  try {
-    // Mock async behavior
-    // - `fetch` API req/res
-    // - WebWorker
-    amountResponse = await mockAsync(amount)
+    // README: do most Redux and thunk specific operations here to reduce coupling
+    // https://redux-toolkit.js.org/api/createAsyncThunk#payloadcreator
+    const data = await fetchCount(value)
+    // const resolvedResponse = await apiCallPromise( .. )
+    // more await ...
 
-    throw new TypeError('bad code')
+    // use sync actions created by `createSlice`?
+    // TODO: but is it a good idea? probably best to avoid in most cases
+    // const {dispatch, getStore} = thunkAPI
+    // dispatch(increment())
 
-    console.log('fetchCount try:', amountResponse)
-    // FIXME: if finally block has a `return` statment this is ignored
-    return amountResponse
-
-    // error handling is encouraged but not needed in all cases
-  } catch (err) {
-    throw err
-    // FIXME: not best way to use a switch,
-    // could use if/else, ternary (but that indents code)
-    // switch (true) {
-    //   case err instanceof TypeError:
-    //     console.error('Match error', err)
-    //   // handle error, throw new error
-    //   // break (but then error will not be thrown)
-    //   default:
-    //     // when using catch block, have a default case that throws
-    //     throw err
-    // }
-
-    // another approach
-    // TODO: check for BabelJS and IE compatibility
-    // https://stackoverflow.com/a/36332700/1402195
-    // switch (err.constructor) {
-    //   case TypeError:
-    //     console.error('case TypeError', err)
-    //     // handle error `throw` or `return`
-    //     throw err
-    //   default:
-    //     // console.error('default case', err)
-    //     // when using catch block, have a default case that throws
-    //     throw err
-    // }
-
-    // TODO: avoid `return` statements in `catch` block
-  } finally {
-    console.log('fetchCount finally:', amountResponse)
-    // overrides returns in try and catch
-    return amountResponse
+    return data
   }
-  // `finally` block has a `return` statement, leaving this block unreachable
+)
+
+export default {
+  fetchCountThunk
 }

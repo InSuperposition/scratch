@@ -1,9 +1,16 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useRef} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {unwrapResult} from '@reduxjs/toolkit'
-import {decrement, increment, incrementByAmount, asyncCount} from '../index.js'
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+  fetchCountThunk
+} from '../index.js'
+// FIXME?: selectors to index.js?
 import {getCount} from '../selectors.js'
 import NumberInput from '../../../packages/number-input'
+import CounterForm from '../../../app/components/counter-form'
 import {bool, string} from 'prop-types'
 import cn from 'classnames'
 import styles from './index.module.css'
@@ -53,7 +60,7 @@ export default function CounterInputs({className, parentProp = true}) {
 
     try {
       // https://github.com/redux-utilities/flux-standard-action
-      action = await dispatch(asyncCount(numberInputAmount))
+      action = await dispatch(fetchCountThunk(numberInputAmount))
       console.log('try action', action, payload)
 
       // https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
@@ -69,18 +76,18 @@ export default function CounterInputs({className, parentProp = true}) {
     }
   }
 
-  // exmaple for naming conventions creating a reusable hook
-  const useMyNewSideEffect = useEffect(
-    // Use effect setup fns shoud never be declared as async
-    function setupMyNewSideEffect() {
-      // call async functions here
+  // example for naming conventions creating a reusable hook
+  // const useMyNewSideEffect = useEffect(
+  //   // Use effect setup fns shoud never be declared as async
+  //   function setupMyNewSideEffect() {
+  //     // call async functions here
 
-      return function cleanupMyNewSideEffect() {
-        // add cleanup logic when needed
-      }
-    },
-    []
-  )
+  //     return function cleanupMyNewSideEffect() {
+  //       // add cleanup logic when needed
+  //     }
+  //   },
+  //   []
+  // )
 
   // derived and memoized (useMemo)
   // ==============================
@@ -135,6 +142,7 @@ export default function CounterInputs({className, parentProp = true}) {
       <div>
         {count} {numberInputAmount} {String(parentProp)}
       </div>
+      <CounterForm />
     </div>
   )
 }

@@ -1,38 +1,41 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
+
+import {createSlice} from '@reduxjs/toolkit'
 import {NAME as name} from './constants.js'
 import reducers from './reducers.js'
-import {fetchCount} from './thunks.js'
+import {fetchCountThunk} from './thunks.js'
 
-const initialState = {
+export * from './selectors.js'
+
+// export for tests
+export const initialState = {
   value: 0
 }
 
-// async actions
-export const asyncCount = createAsyncThunk(
-  `${name}/asyncCount`,
-  async function fetchCountThunk(value, thunkAPI) {
-    // README: do most Redux and thunk specific operations here to reduce coupling
-    // https://redux-toolkit.js.org/api/createAsyncThunk#payloadcreator
-
-    // use sync actions created by `createSlice`?
-    // TODO: but is it a good idea? probably best to avoid in most cases
-    // const {dispatch, getStore} = thunkAPI
-    // dispatch(increment())
-    return fetchCount(value)
-  }
-)
-
-export const counterSlice = createSlice({
+// createSlice in Redux toolkit creates action creators and actions according to Flux Standard Action(FSA) convention
+// https://redux-toolkit.js.org/api/createSlice
+const {actions, reducer} = createSlice({
   name,
   initialState,
   reducers,
   extraReducers: {
     // shared logic
-    [asyncCount.fulfilled]: reducers.incrementByAmount
+    [fetchCountThunk.fulfilled]: reducers.incrementByAmount
+    // [fetchCountThunk.rejected]: reducers.doSomething
+    // [fetchCountThunk.pending]: reducers.wait
+
+    // TODO:
+    // listen for other redux actions from other entites/features
   }
 })
 
-// sync actions
-export const {increment, decrement, incrementByAmount} = counterSlice.actions
+export const {decrement, increment, incrementByAmount} = actions
+export {fetchCountThunk}
+/* 
+  ...Epics? 
+  ...Sagas? 
+  Async all the things!!*/
 
-export default counterSlice.reducer
+export default reducer
+
+// can fallback to `createAction` for FSA and `createReducer` or implement boilerplate
+// https://redux-toolkit.js.org/api/createAction

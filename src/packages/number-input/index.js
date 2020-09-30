@@ -3,7 +3,9 @@ import cn from 'classnames'
 import {string} from 'prop-types'
 
 const NumberInput = forwardRef(function NumberInput(
+  // React Props
   {className, ...props},
+  // ref is not a component prop
   ref
 ) {
   const rootClass = cn('number-input__root', className)
