@@ -1,6 +1,7 @@
 import React, {forwardRef} from 'react'
 import cn from 'classnames'
 import {string} from 'prop-types'
+import './index.scss'
 
 const NumberInput = forwardRef(function NumberInput(
   // React Props

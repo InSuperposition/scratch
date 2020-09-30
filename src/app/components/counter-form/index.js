@@ -1,7 +1,8 @@
 import React from 'react'
 import {useForm} from 'react-hook-form'
-import PropTypes from 'prop-types'
-import resolver from './schema.js'
+import NumberInput from '../../../packages/number-input'
+// import PropTypes from 'prop-types'
+// import resolver from './schema.js'
 
 export default function CounterForm() {
   const {register, handleSubmit} = useForm({
@@ -19,7 +20,7 @@ export default function CounterForm() {
     <form onSubmit={handleSubmit(onSubmit, onError)}>
       <label>Test</label>
       <input name="name" ref={register} />
-      <input name="age" type="number" ref={register} />
+      <NumberInput name="age" ref={register} />
       <input type="submit" />
     </form>
   )
